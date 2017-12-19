@@ -1,73 +1,61 @@
-// Express
-let express = require("express");
-let app = express();
-const path = require("path");
+var express = require('express');
+var morgan = require('morgan');
+var mongoose = require('mongoose');
+var bodyParser = require('body-parser');
 
-// Static Folder
-app.use(express.static(path.join(__dirname, '../public/dist/')));
+var app = express();
+var port = process.env.PORT||1337;
+var router = express.Router();
+var appRoutes = require('../server/routes/api')(router);
+var path = require('path');
 
-// static folder
-//app.use('/public/dist/', express.static(path.join(__dirname, '/public/dist/')));
-
-// Body Parser
-let bodyParser = require("body-parser");
-app.use(bodyParser.urlencoded({extended:true}));
-app.use(bodyParser.json());
-
-// Morgan
-let morgan = require("morgan");
 app.use(morgan('dev'));
+app.use(bodyParser.json()); // for parsing application/json
+app.use(bodyParser.urlencoded({extended:true}));
+app.use(express.static(path.join(__dirname, '../public/dist/'))); // Giving Access
+app.use('/api',appRoutes);
 
-// Mongo Database
-let mongoose = require("mongoose");
-mongoose.connect('mongodb://DIN66008608.corp.Capgemini.com:27017/pmodev');
-let UserSchema = new mongoose.Schema({
-    first_name: { type: String, require: true },
-    last_name: { type: String, require: true },
-    email: { type: String, require: true },
-    editable: { type: Boolean, require: true }
-})
-mongoose.model("User", UserSchema);
-let User = mongoose.model("User");
+//===========Log4j setup============//
+const log4js = require('log4js');
+log4js.configure({
+  appenders: { demandcapacity: { 
+							  	type: 'dateFile', 
+							  	filename: 'logs/demandcapacity.log',
+							    "pattern": "-yyyy-MM-dd",
+							    alwaysIncludePattern:true 
+						      } 
+			 },
+  categories: { default: { appenders: ['demandcapacity'], level: 'trace' } }
+});
+const logger = log4js.getLogger('demandcapacity');
+//============Log4j setup===========//
 
-// Routes
-// Get Users
-app.get("/users", (req, res, next) => {
-    console.log("Server > GET '/users' ");
-    User.find({}, (err, users)=>{
-        return res.json(users);
-    })
-})
-// Create User
-app.post("/users", (req, res, next) => {
-    console.log("Server > POST '/users' > user ", req.body);
-    delete req.body._id
-    User.create(req.body, (err, user)=>{
-        if (err) return res.json(err)
-        else return res.json(user)
-    })
-})
-// Destroy User
-app.delete("/users/:id", (req, res, next) => {
-    console.log("Server > DELETE '/users/:id' > id ", req.params.id);
-    User.deleteOne({_id:req.params.id}, (err, rawData)=>{
-        if (err) return res.json(err)
-        else return res.json(true)
-    })
-})
-app.put("/users/:id", (req, res, next) => {
-    console.log("Server > PUT '/users/:id' > id ", req.params.id);
-    console.log("Server > PUT '/users/:id' > user ", req.body);
-    User.update({_id:req.params.id}, req.body, (err, rawData)=>{
-        if (err) return res.json(err)
-        else return res.json(true)
-    })
-    
+
+//var mongodbUri = 'mongodb://laxmi:Laxmi123@ds119810.mlab.com:19810/pmodb';
+
+var mongodbUri = 'mongodb://DIN66008608.corp.Capgemini.com:27017/pmodev';
+
+var options = {};
+
+var connection = mongoose.connect(mongodbUri,options, function(err) {	
+	if(err){
+		logger.error('Connection Failed.'+err);
+	} else {
+		console.log('Connection Successful');
+		logger.info('Connection Successful.');
+	}
+}); 
+
+
+
+/*app.get('/', function(req, res) {
+  res.send('Hello World');
+});*/
+
+app.get('*', function(req,res){
+	res.sendfile(path.resolve(path.join(__dirname, '../public/dist/index.html')))
 })
 
-app.all("*", (req,res,next) => {
-    res.sendfile(path.resolve(path.join(__dirname, '../public/dist/index.html')))
-})
-
-// Server Listening @ 1337
-app.listen(1337, ()=> console.log("Server running at 1337")); 
+app.listen(port, function(){
+	console.log('Running the Server on port : ' + port);
+});

@@ -9,11 +9,11 @@ export class AuthenticationService {
  constructor(private http: Http) { }
 
   login(username: string, password: string) {
-        return this.http.post('/users', ({ username: username, password: password }))
+        return this.http.post('/api/authenticate', ({ username: username, password: password }))
             .map((response: Response) => {
                 // login successful if there's a jwt token in the response
                 let user = response.json();
-                console.log("user start");        
+                console.log("users start");        
                 console.log(user);
                 console.log("user END");
                 if (user && user.token) {
@@ -23,7 +23,6 @@ export class AuthenticationService {
                 return user;
             });
     }
-
     logout() {
         // remove user from local storage to log user out
         localStorage.removeItem('currentUser');
