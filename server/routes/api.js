@@ -45,7 +45,7 @@ module.exports = function(router){
 	});
 
 	router.use(function(req, res, next){
-		var token = req.body.token || req.body.query || req.headers['x-access-token'];
+		/*var token = req.body.token || req.body.query || req.headers['x-access-token'];
 		if(token){
 			jwt.verify(token,secret, function(err, decoded){
 				if(err) {
@@ -57,7 +57,9 @@ module.exports = function(router){
 			});
 		}else{
 			res.json({success:false, message: 'Token Not Found'});
-		}
+		}*/
+		
+		next();
 	});
 
 	router.put('/resetpassword', function(req,res){
@@ -85,6 +87,13 @@ module.exports = function(router){
 	router.post('/me', function(req, res){
 		res.send(req.decoded);
 	});
+
+
+    //routes for resource set api
+	router.use("/newuser", require("../controllers/userController.api"));
+
+	//routes for upload pic set api
+	router.use("/upload", require("../controllers/profileController.api"));
 
 return router;
 }

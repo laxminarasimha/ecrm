@@ -19,13 +19,13 @@ export class UserService {
     .map(data => data.json()).toPromise()
   }
 
-  destroy(user: User){
-    return this._http.delete("/users/"+user._id)
+  destroy(_id: String){
+    return this._http.delete("/users/"+_id)
     .map(data => data.json()).toPromise()
   }
 
-  update(user: User){
-    return this._http.put("/users/"+user._id, user)
+  update(user: User,_id: String){
+    return this._http.put("/users/"+_id, user)
     .map(data => data.json()).toPromise()
   }
 
@@ -34,8 +34,8 @@ export class UserService {
     .map(data => data.json()).toPromise()
   }
 
-  getUser(user: User){
-    return this._http.get("/users/"+user._id)
+  getUser(user: User,_id: String){
+    return this._http.get("/users/"+_id)
     .map(data => data.json()).toPromise()
   }
 }

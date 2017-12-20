@@ -10,7 +10,7 @@ import { AppRoutingModule } from './app-routing.module';
 import {AuthGuard} from './auth.guard';
 
 import {AlertService,AuthenticationService,UserService } from './_services/index';
-
+import {AppuserService } from './_services/appuser/appuser.service';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { LoginComponent } from './login/login.component';
@@ -43,7 +43,7 @@ import { AppusersComponent } from './components/appusers/appusers.component';
     FormsModule,
     MaterialModule
   ],
-  providers: [UserService,AuthGuard,AlertService,AuthenticationService],
+  providers: [UserService,AuthGuard,AlertService,AuthenticationService,AppuserService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
