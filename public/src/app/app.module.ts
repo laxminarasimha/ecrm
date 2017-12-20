@@ -14,13 +14,25 @@ import {AlertService,AuthenticationService,UserService } from './_services/index
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { LoginComponent } from './login/login.component';
+import { AppheaderComponent } from './components/appheader/appheader.component';
+import { AppfooterComponent } from './components/appfooter/appfooter.component';
+import { AppsidebarComponent } from './components/appsidebar/appsidebar.component';
+import { GraphComponent } from './components/graph/graph.component';
+import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { AppusersComponent } from './components/appusers/appusers.component';
 
 @NgModule({
 
   declarations: [
     AppComponent,
     HomeComponent,
-    LoginComponent
+    LoginComponent,
+    AppheaderComponent,
+    AppfooterComponent,
+    AppsidebarComponent,
+    GraphComponent,
+    DashboardComponent,
+    AppusersComponent
   ],
 
   imports: [
